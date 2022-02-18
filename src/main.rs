@@ -34,25 +34,23 @@ fn main() {
 
     // Target platform
     // println!("{:?}", match_question("which operating systems or runtimes do you develop", &questions));
-    // println!("{:#?}", &questions[24..35]);
-    // print_table(histogram(24, &answers));
-    // print_table(histogram(25, &answers));
-    // print_table(histogram(34, &answers));
-    // print_table(counts(25..35, &questions, &answers));
-    // print_table(levels(25..35, &answers));
-    // print_table2(counts_multi(25..35, &[2, 3, 7, 10], &questions, &answers));
+    // !("{:#?}", &questions[11..22]);
+    // print_table(histogram(21, &answers));
+    // print_table(counts(12..22, &questions, &answers));
+    // print_table(levels(12..22, &answers));
+    // print_table2(counts_multi(12..22, &[2, 3, 4, 5, 7, 12], &questions, &answers));
 
     // Editors
     // println!("{:?}", match_question("which editor or ide setup", &questions));
     // println!("{:#?}", &questions[71..81]);
-    print_table(counts(72..81, &questions, &answers));
-    let g0: &[_] = &[72, 73, 74, 75, 76, 77, 78, 79, 80];
-    let g1: &[_] = &[73, 75, 76, 79];
-    let g2: &[_] = &[72, 74, 77, 78];
-    let g3: &[_] = &[80];
-    let g4: &[_] = &[74, 77, 78];
-    let groups = count_groups(&[g0, g1, g2, g3, g4], &questions, &answers);
-    print_table(groups);
+    // print_table(counts(72..81, &questions, &answers));
+    // let g0: &[_] = &[72, 73, 74, 75, 76, 77, 78, 79, 80];
+    // let g1: &[_] = &[73, 75, 76, 79];
+    // let g2: &[_] = &[72, 74, 77, 78];
+    // let g3: &[_] = &[80];
+    // let g4: &[_] = &[74, 77, 78];
+    // let groups = count_groups(&[g0, g1, g2, g3, g4], &questions, &answers);
+    // print_table(groups);
     // print_table(histogram(80, &answers));
 
     // Debuggers
@@ -66,6 +64,36 @@ fn main() {
     // let groups = count_groups(&[g1, g2, g3, g0], &questions, &answers);
     // print_table(groups);
     // print_table(histogram(90, &answers));
+
+    // How vital?
+    // println!("{:?}", match_question("Please indicate how vital", &questions));
+    // println!("{:#?}", &questions[91..100]);
+    // print_table(counts(91..100, &questions, &answers));
+    // let g0: &[_] = &["Essential", "Not important", "Somewhat important", "I have no experience with this tool"];
+    // let g1: &[_] = &["Essential", "Not important", "Somewhat important"];
+    // for q in 92..100 {
+    //     println!("{}:", &questions[q]);
+    //     print_table(histogram_grouped(q, &[g0, g1], &answers));
+    // }
+
+    // Version
+    // println!("{:?}", match_question("Which version(s) of Rust do you use for local development?", &questions));
+    // println!("{:#?}", &questions[22..33]);
+    // let g0: &[_] = &[23, 24, 25, 26, 28, 29, 27, 30, 31, 32];
+    // let g1: &[_] = &[23, 24, 25, 26];
+    // let g2: &[_] = &[28, 29];
+    // let g3: &[_] = &[27, 30, 31, 32];
+    // let groups = count_groups(&[g1, g2, g3, g0], &questions, &answers);
+    // print_table(groups);
+
+    // Why nightly
+    // println!("{:?}", match_question("If you use nightly, why?", &questions));
+    // println!("{:#?}", &questions[44..54]);
+    print_table(counts(44..54, &questions, &answers));
+    let g0: &[_] = &[46, 47, 48, 49, 50, 51, 52, 53];
+    let g1: &[_] = &[47, 48];
+    let groups = count_groups(&[g1, g0], &questions, &answers);
+    print_table(groups);
 }
 
 fn counts(
@@ -82,8 +110,8 @@ fn counts(
                 count += 1;
             }
         }
-        result.insert(questions[i].clone(), count);
-        // result.insert(format!("{i}: {}", &questions[i]), count);
+        // result.insert(questions[i].clone(), count);
+        result.insert(format!("{i}: {}", &questions[i]), count);
     }
 
     result
@@ -197,6 +225,17 @@ fn histogram(index: usize, answers: &[Vec<String>]) -> HashMap<String, u64> {
 
     for a in answers {
         *result.entry(a[index].clone()).or_insert(0) += 1;
+    }
+
+    result
+}
+
+fn histogram_grouped(index: usize, groups: &[&[&str]], answers: &[Vec<String>]) -> HashMap<String, u64> {
+    let histo = histogram(index, answers);
+    let mut result = HashMap::new();
+
+    for g in groups {
+        result.insert(g.join(", "), g.iter().map(|s| histo[*s]).sum());
     }
 
     result
